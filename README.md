@@ -1,2 +1,2 @@
 # get_next_line
-File reading with BUFFER_SIZE.
+File reading (line by line) with BUFFER_SIZE.
