@@ -6,7 +6,7 @@
 /*   By: omercade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:56:55 by omercade          #+#    #+#             */
-/*   Updated: 2020/02/11 18:03:51 by omercade         ###   ########.fr       */
+/*   Updated: 2020/02/13 12:30:01 by omercade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,16 @@ char	*line_record(char **s, char **line)
 
 void	free_storage(char **s, char **line)
 {
-	*line = ft_strdup(*s);
-	free(*s);
-	*s = NULL;
+	if (!*s)
+	{
+		*line = ft_strdup("");
+	}
+	else
+	{
+		*line = ft_strdup(*s);
+		free(*s);
+		*s = NULL;
+	}
 }
 
 int		get_next_line(int fd, char **line)
@@ -50,10 +57,13 @@ int		get_next_line(int fd, char **line)
 	static char	*s;
 	char		*buff;
 
-	if (fd < 0 || line == NULL || BUFFER_SIZE <= 0)
-		return (-1);
 	if ((buff = malloc(BUFFER_SIZE + 1)) == NULL)
 		return (-1);
+	if (fd < 0 || line == NULL || BUFFER_SIZE <= 0 || read(fd, buff, 0) == -1)
+	{
+		free(buff);
+		return (-1);
+	}
 	while ((ret = read(fd, buff, BUFFER_SIZE)) > 0)
 	{
 		buff[ret] = '\0';
@@ -65,8 +75,6 @@ int		get_next_line(int fd, char **line)
 		}
 	}
 	free(buff);
-	if (ret < 0)
-		return (-1);
 	if (ret == 0)
 		free_storage(&s, line);
 	return (0);
