@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: omercade <omercade@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/13 13:00:15 by omercade          #+#    #+#             */
-/*   Updated: 2020/02/17 16:57:03 by omercade         ###   ########.fr       */
+/*   Updated: 2020/02/18 18:12:00 by omercade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 int		read_file(char *buff, char **s, int fd)
 {
@@ -53,7 +53,7 @@ int		record_line(char **line, char **s, int ret)
 int		get_next_line(int fd, char **line)
 {
 	int			ret;
-	static char	*s;
+	static char	*s[4096];
 	char		*buff;
 
 	if ((buff = malloc(BUFFER_SIZE + 1)) == NULL)
@@ -64,12 +64,12 @@ int		get_next_line(int fd, char **line)
 		buff = NULL;
 		return (-1);
 	}
-	if (s == NULL)
-		s = ft_strdup("");
-	if (ft_strtab(s) == -1)
-		ret = read_file(buff, &s, fd);
+	if (s[fd] == NULL)
+		s[fd] = ft_strdup("");
+	if (ft_strtab(s[fd]) == -1)
+		ret = read_file(buff, &s[fd], fd);
 	else
-		ret = ft_strtab(s) + 1;
+		ret = ft_strtab(s[fd]) + 1;
 	free(buff);
-	return (record_line(line, &s, ret));
+	return (record_line(line, &s[fd], ret));
 }
